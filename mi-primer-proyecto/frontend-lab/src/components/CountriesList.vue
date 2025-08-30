@@ -20,8 +20,7 @@
                     <td>{{ country.language }}</td>
                     <td>
                         <button class="btn btn-secondary btn-sm">Editar</button>
-                        <button class="btn btn-danger btn-sm">Eliminar</button>
-                    </td>
+                        <button class="btn btn-danger btn-sm" @click="deleteCountry(index)">Eliminar</button>                    </td>
                 </tr>
             </tbody>
         </table>
@@ -37,12 +36,15 @@
                     { name: "Costa Rica", continent: "América", language: "Español" },
                     { name: "Japón", continent: "Asia", language: "Japonés" },
                     { name: "Corea del Sur", continent: "Asia", language: "Coreano" },
-                    { name: "Italia", continent: "Europa", language: "Italiano" },
-                    { name: "Alemania", continent: "Europa", language: "Alemán" },
                 ],
             };
         },
-    }
+        methods: {
+            deleteCountry(index) {
+                this.countries.splice(index, 1);
+            }
+        }
+    };
 </script>
 
 <style lang="scss" scoped>
