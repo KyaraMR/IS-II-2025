@@ -1,20 +1,18 @@
-using backend_lab.Models;
-using backend_lab.Repositories;
-
-namespace backend_lab.Services
+﻿using backend_lab_c15380.Models;
+using backend_lab_c15380.Repositories;
+namespace backend_lab_c15380.Services
 {
     public class CountryService
     {
         private readonly CountryRepository countryRepository;
-
-        public CountryService(IConfiguration configuration)
+        public CountryService()
         {
-            countryRepository = new CountryRepository(configuration);
+            countryRepository = new CountryRepository();
         }
-
         public List<CountryModel> GetCountries()
         {
-            return countryRepository.GetCountries();
+            // Add any missing business logic when it is neccesary
+        return countryRepository.GetCountries();
         }
     }
 }

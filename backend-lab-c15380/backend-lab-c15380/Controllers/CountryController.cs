@@ -1,24 +1,26 @@
+﻿using backend_lab_c15380.Models;
+using backend_lab_c15380.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using backend_lab.Services;
-using backend_lab.Models;
 
 namespace backend_lab.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class CountryController : ControllerBase
     {
         private readonly CountryService countryService;
 
-        public CountryController(IConfiguration configuration)
+        public CountryController()
         {
-            countryService = new CountryService(configuration);
+            countryService = new CountryService();
         }
 
         [HttpGet]
-        public ActionResult<List<CountryModel>> Get()
+        public List<CountryModel> Get()
         {
-            return countryService.GetCountries();
+            var countries = countryService.GetCountries();
+            return countries;
         }
     }
 }
