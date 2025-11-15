@@ -1,0 +1,121 @@
+{
+  "id": "921a803b-7835-476f-b483-e63922e379c5",
+  "version": "2.0",
+  "name": "lab6",
+  "url": "http://localhost:8081",
+  "tests": [{
+    "id": "96380783-fa7e-4ac9-9988-bcd5ae2d2ede",
+    "name": "lab6",
+    "commands": [{
+      "id": "feb3376f-9d0d-4721-ae3c-c20d4860f853",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e2920e90-7e91-492b-9d16-4a915af438ee",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "784x700",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b2acc751-050b-4799-8a4a-c6cf413c3892",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.display-4",
+      "targets": [
+        ["css=.display-4", "css:finder"],
+        ["xpath=//div[@id='app']/div/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Lista de países')]", "xpath:innerText"]
+      ],
+      "value": "Lista de países"
+    }, {
+      "id": "4c3637e5-067c-41b6-8467-56c1ad7f4eae",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.btn-outline-secondary",
+      "targets": [
+        ["css=.btn-outline-secondary", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/a/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Agregar país')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "552f778c-4fb3-4eee-a27c-051440690d6f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-outline-secondary",
+      "targets": [
+        ["css=.btn-outline-secondary", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/div/a/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Agregar país')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b53b2fa7-d709-40b7-b248-1a47426c06a0",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.text-center",
+      "targets": [
+        ["css=.text-center", "css:finder"],
+        ["xpath=//div[@id='app']/div/div/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Formulario de creación de países')]", "xpath:innerText"]
+      ],
+      "value": "Formulario de creación de países"
+    }, {
+      "id": "44a3ecc9-1174-4ea6-885e-169d16e36bf5",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.form-group:nth-child(1) > .form-control",
+      "targets": [
+        ["css=.form-group:nth-child(1) > .form-control", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "236d664a-5786-4e5c-9fae-a6bcd1f5b2a9",
+      "comment": "",
+      "command": "type",
+      "target": "css=.form-group:nth-child(1) > .form-control",
+      "targets": [
+        ["css=.form-group:nth-child(1) > .form-control", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Prueba"
+    }, {
+      "id": "3824e94d-3c12-41e2-b6ae-6daf7f22d427",
+      "comment": "",
+      "command": "assertValue",
+      "target": "css=.form-group:nth-child(1) > .form-control",
+      "targets": [
+        ["css=.form-group:nth-child(1) > .form-control", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Prueba"
+    }]
+  }],
+  "suites": [{
+    "id": "a83ef440-8b33-4656-9249-b864dd291025",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["96380783-fa7e-4ac9-9988-bcd5ae2d2ede"]
+  }],
+  "urls": ["http://localhost:8081/"],
+  "plugins": []
+}
