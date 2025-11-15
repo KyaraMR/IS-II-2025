@@ -12,7 +12,25 @@ namespace backend_lab_c15380.Services
         public List<CountryModel> GetCountries()
         {
             // Add any missing business logic when it is neccesary
-        return countryRepository.GetCountries();
+            return countryRepository.GetCountries();
+        }
+
+        public string CreateCountry(CountryModel country)
+        {
+            var result = string.Empty;
+            try
+            {
+                var isCreated = countryRepository.CreateCountry(country);
+                if (!isCreated)
+                {
+                    result = "Error al crear el país";
+                }
+            }
+            catch (Exception)
+            {
+                result = "Error creando país";
+            }
+            return result;
         }
     }
 }

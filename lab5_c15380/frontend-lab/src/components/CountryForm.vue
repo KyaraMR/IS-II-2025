@@ -57,18 +57,15 @@ export default {
   methods: {
     saveCountry() {
       console.log("Datos a guardar:", this.formData);
-      axios.post("https://localhost:7019/api/Country", {
-        Name: this.formData.Name,
-        Continent: this.formData.Continent,
-        Language: this.formData.Language,
-      })
-      .then(function (response) {
-        console.log(response);
-        window.location.href = "/";
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      axios
+        .post("https://localhost:7019/api/Country", this.formData)
+        .then(function (response) {
+            console.log(response);
+            window.location.href = "/";
+        })
+        .catch(function (error) {
+            console.log("Error: ", error);
+        });
     }
   }
 };

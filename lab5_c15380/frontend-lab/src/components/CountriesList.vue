@@ -46,6 +46,8 @@
                     { name: "Costa Rica", continent: "América", language: "Español" },
                     { name: "Japón", continent: "Asia", language: "Japonés" },
                     { name: "Corea del Sur", continent: "Asia", language: "Coreano" },
+                    { name: "Italia", continent: "Europa", language: "Italiano" },
+                    { name: "Alemania", continent: "Europa", language: "Alemán"},
                 ],
             };
         },
@@ -54,12 +56,12 @@
                 this.countries.splice(index, 1);
             },
             getCountries() {
-                axios.get("http://localhost:5000/api/Country").then((response) => {
+                axios.get("http://localhost:5279/api/country").then((response) => {
                     this.countries = response.data;
                 });
             },
         },
-        created() {
+        created: function () {
             this.getCountries();
         },
     };
