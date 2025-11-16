@@ -58,7 +58,7 @@ export default {
     saveCountry() {
       console.log("Datos a guardar:", this.formData);
       axios
-        .post("https://localhost:7019/api/Country", this.formData)
+        .post("http://localhost:5279/api/Country", this.formData)
         .then(function (response) {
             console.log(response);
             window.location.href = "/";
