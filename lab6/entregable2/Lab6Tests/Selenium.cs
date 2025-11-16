@@ -25,12 +25,12 @@ namespace Lab6Tests
             var url = "http://localhost:8081/";
             _driver.Manage().Window.Maximize();
 
-            Console.WriteLine("🚀 Navegando a: " + url);
+            Console.WriteLine("Navegando a: " + url);
             _driver.Navigate().GoToUrl(url);
 
             // ASSERT 1: Verificar página principal
             var h1Element = _wait.Until(d => d.FindElement(By.TagName("h1")));
-            Console.WriteLine("✅ h1 encontrado: " + h1Element.Text);
+            Console.WriteLine("h1 encontrado: " + h1Element.Text);
             Assert.That(h1Element.Text, Is.EqualTo("Lista de países"));
 
             // ACT - Ir al formulario
