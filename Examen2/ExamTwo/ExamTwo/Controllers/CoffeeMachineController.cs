@@ -1,107 +1,104 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ExamTwo.Models;
+using ExamTwo.Services.Interfaces;
 
 namespace ExamTwo.Controllers
 {
-    public class CoffeeMachineController : Controller
+    // API Controller for coffee machine operations
+    // Handles HTTP requests and delegates business logic to service layer
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CoffeeMachineController : ControllerBase
     {
-
-        private readonly Database _db;
-
-        public CoffeeMachineController(Database db)
+        private readonly ICoffeeMachineService _coffeeMachineService;
+        
+        // Constructor with dependency injection
+        public CoffeeMachineController(ICoffeeMachineService coffeeMachineService)
         {
-            _db = db;
+            _coffeeMachineService = coffeeMachineService;
         }
-
-        [HttpGet("getCoffees")]
+        
+        // GET endpoint to retrieve available coffees and quantities
+        [HttpGet("coffees")]
+        public ActionResult<Dictionary<string, int>> GetAvailableCoffees()
+        {
+            var coffees = _coffeeMachineService.GetAvailableCoffees();
+            return Ok(coffees);
+        }
+        
+        // GET endpoint to retrieve coffee prices
+        [HttpGet("prices")]
         public ActionResult<Dictionary<string, int>> GetCoffeePrices()
         {
-            return Ok(_db.keyValues);
+            var prices = _coffeeMachineService.GetCoffeePrices();
+            return Ok(prices);
         }
-
-        [HttpGet("getCoffeePricesInCents")]
-        public ActionResult<Dictionary<string, int>> GetCoffeePricesInCents()
+        
+        // GET endpoint to retrieve coffee quantities
+        [HttpGet("quantities")]
+        public ActionResult<Dictionary<string, int>> GetCoffeeQuantities()
         {
-            return Ok(_db.keyValues2);
+            var quantities = _coffeeMachineService.GetCoffeeQuantities();
+            return Ok(quantities);
         }
-
-        [HttpGet("getQuantity")]
-        public ActionResult<Dictionary<string, int>> GetQuantity()
+        
+        // POST endpoint to process a coffee purchase
+        [HttpPost("purchase")]
+        public ActionResult PurchaseCoffee([FromBody] OrderRequest request)
         {
-            return Ok(_db.keyValues3);
+            if (request == null)
+            {
+                return BadRequest("Solicitud inválida.");
+            }
+            
+            var result = _coffeeMachineService.ProcessPurchase(request);
+            
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            
+            // Message changes depending on the requirements
+            string responseMessage = $"Su vuelto es de {result.ChangeAmount} colones.\nDesglose:";
+            
+            // Only add breakdown if there's actually change to give
+            if (result.ChangeBreakdown != null && result.ChangeBreakdown.Count > 0)
+            {
+                // Sort coins from highest to lowest
+                foreach (var coin in result.ChangeBreakdown.OrderByDescending(c => c.Key))
+                {
+                    responseMessage += $"\n{coin.Value} moneda(s) de {coin.Key}";
+                }
+            }
+            else if (result.ChangeAmount == 0)
+            {
+                // No change needed
+                responseMessage = "Compra exitosa. No hay vuelto.";
+            }
+            
+            return Ok(responseMessage);
         }
-
-        [HttpPost("buyCoffee")]
-        public ActionResult<string> BuyCoffee([FromBody] OrderRequest request)
+        
+        // POST endpoint to check coffee availability without purchasing
+        [HttpPost("check-availability")]
+        public ActionResult CheckCoffeeAvailability([FromBody] Dictionary<string, int> order)
         {
-            if (request.Order == null || request.Order.Count == 0)
-                return BadRequest("Ordem vacia.");
-
-            if (request.Payment.TotalAmount <= 0)
-                return BadRequest("Dinero insuficiente ");
-
-            try
+            // Create a temporary request to reuse validation logic
+            var tempRequest = new OrderRequest
             {
-                var costoTotal = request.Order.Sum(o => _db.keyValues2.First(c => c.Key == o.Key).Value * o.Value);
-
-                if (request.Payment.TotalAmount < costoTotal)
-                { 
-                    return BadRequest("Dinero insuficiente ");
-                }
-
-
-                foreach (var cafe in request.Order)
-                {
-                    var selected = _db.keyValues.First(c => c.Key == cafe.Key).Key;
-                    if (cafe.Value > _db.keyValues[selected])
-                    {
-                        return $"No hay suficientes {selected} en la máquina.";
-                    }
-                    _db.keyValues[selected] -= cafe.Value;
-                }
-
-                var change = request.Payment.TotalAmount - costoTotal;
-                String result = $"Su vuelto es de: {change} colones. Desglose:";
-
-                foreach (var coin in _db.keyValues3.Keys.OrderByDescending(c => c))
-                {
-                    var count = Math.Min(change / coin, _db.keyValues3[coin]);
-                    if (count > 0)
-                    {
-                        result +=  $" {count} moneda de {coin},  ";              
-                        change -= coin * count;
-                    }
-                }
-
-
-                if (change > 0)
-                {
-                    return StatusCode(500, "No hay suficiente cambio en la máquina.");
-                }
-
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
+                Order = order,
+                Payment = new Payment { TotalAmount = 0 }
+            };
+            
+            // Use service validation without actually processing purchase
+            var isValid = _coffeeMachineService.ValidateOrder(tempRequest, out string errorMessage);
+            
+            if (!isValid)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(errorMessage);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            
+            return Ok("Disponibilidad confirmada.");
         }
-    }
-
-    public class OrderRequest
-    {
-        public Dictionary<string, int> Order { get; set; }
-        public Payment Payment { get; set; }
-    }
-
-    public class Payment
-    {
-        public int TotalAmount { get; set; }
-        public List<int> Coins { get; set; }
-        public List<int> Bills { get; set; }
     }
 }
