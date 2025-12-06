@@ -17,6 +17,7 @@ namespace ExamTwo.Services
             _repository = repository;
         }
         
+        // ===== GET Methods =====
         public Dictionary<string, int> GetAvailableCoffees()
         {
             var coffees = _repository.GetAllCoffees();
@@ -34,6 +35,7 @@ namespace ExamTwo.Services
             return GetAvailableCoffees();
         }
         
+        // ===== Validation Methods =====
         public bool ValidateOrder(OrderRequest orderRequest, out string errorMessage)
         {
             errorMessage = string.Empty;
@@ -76,11 +78,29 @@ namespace ExamTwo.Services
         public bool ValidatePayment(OrderRequest orderRequest, int totalCost, out string errorMessage)
         {
             errorMessage = string.Empty;
+            var payment = orderRequest.Payment;
             
-            // Check if payment amount is sufficient
-            if (orderRequest.Payment.TotalAmount < totalCost)
+            // Validate denominations (coins and bills)
+            var (isValidDenom, denomError) = payment.ValidateDenominations();
+            if (!isValidDenom)
             {
-                errorMessage = "Dinero insuficiente para realizar la compra.";
+                errorMessage = denomError;
+                return false;
+            }
+            
+            // Validate that TotalAmount matches sum of denominations
+            var (isValidTotal, totalError) = payment.ValidateTotalMatchesDenominations();
+            if (!isValidTotal)
+            {
+                errorMessage = totalError;
+                return false;
+            }
+            
+            // Validate that payment covers cost
+            if (payment.TotalAmount < totalCost)
+            {
+                errorMessage = $"Dinero insuficiente. Total requerido: {totalCost} colones, " +
+                             $"Pagado: {payment.TotalAmount} colones.";
                 return false;
             }
             
@@ -116,6 +136,7 @@ namespace ExamTwo.Services
             return remainingChange == 0;
         }
         
+        // ===== Purchase processing =====
         public CoffeeMachineResponse ProcessPurchase(OrderRequest orderRequest)
         {
             var response = new CoffeeMachineResponse();

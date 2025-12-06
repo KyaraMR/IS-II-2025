@@ -26,7 +26,7 @@ namespace ExamTwo.Repositories
         
         public Coffee GetCoffeeByName(string coffeeName)
         {
-            // Case-sensitive search for coffee by name
+            // Search for coffee by name
             return _coffees.FirstOrDefault(c => c.Name == coffeeName);
         }
         

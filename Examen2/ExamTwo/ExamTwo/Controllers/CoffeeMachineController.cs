@@ -51,6 +51,22 @@ namespace ExamTwo.Controllers
                 return BadRequest("Solicitud inválida.");
             }
             
+            if (request.Payment == null)
+            {
+                return BadRequest("Se requiere información de pago.");
+            }
+            
+            // Optional: Check if at least some payment method is provided
+            bool hasCoins = request.Payment.Coins != null && request.Payment.Coins.Count > 0;
+            bool hasBills = request.Payment.Bills != null && request.Payment.Bills.Count > 0;
+            bool hasTotalAmount = request.Payment.TotalAmount > 0;
+            
+            if (!hasCoins && !hasBills && !hasTotalAmount)
+            {
+                return BadRequest("Debe proporcionar monedas, billetes o un monto total.");
+            }
+            
+            // Process purchase through service
             var result = _coffeeMachineService.ProcessPurchase(request);
             
             if (!result.Success)
@@ -58,23 +74,8 @@ namespace ExamTwo.Controllers
                 return BadRequest(result.Message);
             }
             
-            // Message changes depending on the requirements
-            string responseMessage = $"Su vuelto es de {result.ChangeAmount} colones.\nDesglose:";
-            
-            // Only add breakdown if there's actually change to give
-            if (result.ChangeBreakdown != null && result.ChangeBreakdown.Count > 0)
-            {
-                // Sort coins from highest to lowest
-                foreach (var coin in result.ChangeBreakdown.OrderByDescending(c => c.Key))
-                {
-                    responseMessage += $"\n{coin.Value} moneda(s) de {coin.Key}";
-                }
-            }
-            else if (result.ChangeAmount == 0)
-            {
-                // No change needed
-                responseMessage = "Compra exitosa. No hay vuelto.";
-            }
+            // Format response according to requirements
+            string responseMessage = FormatPurchaseResponse(result);
             
             return Ok(responseMessage);
         }
@@ -99,6 +100,27 @@ namespace ExamTwo.Controllers
             }
             
             return Ok("Disponibilidad confirmada.");
+        }
+
+        private string FormatPurchaseResponse(CoffeeMachineResponse result)
+        {
+            if (result.ChangeAmount == 0)
+            {
+                return "Compra exitosa. No hay vuelto.";
+            }
+            
+            string responseMessage = $"Su vuelto es de {result.ChangeAmount} colones.\nDesglose:";
+            
+            if (result.ChangeBreakdown != null && result.ChangeBreakdown.Count > 0)
+            {
+                // Sort coins from highest to lowest
+                foreach (var coin in result.ChangeBreakdown.OrderByDescending(c => c.Key))
+                {
+                    responseMessage += $"\n{coin.Value} moneda(s) de {coin.Key}";
+                }
+            }
+            
+            return responseMessage;
         }
     }
 }
