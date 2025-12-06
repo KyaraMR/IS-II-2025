@@ -84,11 +84,16 @@ namespace ExamTwo.Controllers
         [HttpPost("check-availability")]
         public ActionResult CheckCoffeeAvailability([FromBody] Dictionary<string, int> order)
         {
+            if (order == null || order.Count == 0)
+            {
+                return BadRequest("La orden no puede estar vacía.");
+            }
+            
             // Create a temporary request to reuse validation logic
             var tempRequest = new OrderRequest
             {
                 Order = order,
-                Payment = new Payment { TotalAmount = 0 }
+                Payment = null
             };
             
             // Use service validation without actually processing purchase
@@ -99,7 +104,7 @@ namespace ExamTwo.Controllers
                 return BadRequest(errorMessage);
             }
             
-            return Ok("Disponibilidad confirmada.");
+            return Ok("Disponibilidad confirmada. Puede proceder con la compra.");
         }
 
         private string FormatPurchaseResponse(CoffeeMachineResponse result)

@@ -48,10 +48,14 @@ namespace ExamTwo.Services
             }
             
             // Check if payment is valid
-            if (orderRequest.Payment == null || orderRequest.Payment.TotalAmount <= 0)
+            if (orderRequest.Payment != null)
             {
-                errorMessage = "Monto de pago inválido.";
-                return false;
+                // Si Payment exists, validate positivo TotalAmount
+                if (orderRequest.Payment.TotalAmount <= 0)
+                {
+                    errorMessage = "Monto de pago inválido.";
+                    return false;
+                }
             }
             
             // Validate each item in the order
