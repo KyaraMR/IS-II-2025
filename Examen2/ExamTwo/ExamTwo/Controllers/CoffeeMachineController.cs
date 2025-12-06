@@ -50,26 +50,34 @@ namespace ExamTwo.Controllers
             {
                 return BadRequest("Solicitud inválida.");
             }
-
-            try
+            
+            if (request.Payment == null)
             {
-                // All business logic is handled in the service layer
-                var result = _coffeeMachineService.ProcessPurchase(request);
-                
-                if (!result.Success)
-                {
-                    return BadRequest(result.Message);
-                }
-                
-                // Use service method to format response
-                string responseMessage = _coffeeMachineService.FormatPurchaseResponse(result);
-                return Ok(responseMessage);
-            }
-            catch (System.Exception)
-            {
-                return StatusCode(500, "Error interno del servidor.");
+                return BadRequest("Se requiere información de pago.");
             }
             
+            // Optional: Check if at least some payment method is provided
+            bool hasCoins = request.Payment.Coins != null && request.Payment.Coins.Count > 0;
+            bool hasBills = request.Payment.Bills != null && request.Payment.Bills.Count > 0;
+            bool hasTotalAmount = request.Payment.TotalAmount > 0;
+            
+            if (!hasCoins && !hasBills && !hasTotalAmount)
+            {
+                return BadRequest("Debe proporcionar monedas, billetes o un monto total.");
+            }
+            
+            // Process purchase through service
+            var result = _coffeeMachineService.ProcessPurchase(request);
+            
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            
+            // Format response according to requirements
+            string responseMessage = FormatPurchaseResponse(result);
+            
+            return Ok(responseMessage);
         }
         
         // POST endpoint to check coffee availability without purchasing
