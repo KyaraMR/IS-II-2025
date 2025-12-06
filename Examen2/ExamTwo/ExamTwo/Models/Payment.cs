@@ -71,5 +71,31 @@ namespace ExamTwo.Models
             
             return (true, string.Empty);
         }
+
+        // Validates all payment aspects at once
+        public (bool isValid, string errorMessage) ValidatePayment()
+        {
+            // Validate denominations
+            var (isValidDenom, denomError) = ValidateDenominations();
+            if (!isValidDenom)
+            {
+                return (false, denomError);
+            }
+            
+            // Validate total matches denominations
+            var (isValidTotal, totalError) = ValidateTotalMatchesDenominations();
+            if (!isValidTotal)
+            {
+                return (false, totalError);
+            }
+            
+            // Validate total amount is positive
+            if (TotalAmount <= 0)
+            {
+                return (false, "El monto total debe ser mayor a 0.");
+            }
+            
+            return (true, string.Empty);
+        }
     }
 }

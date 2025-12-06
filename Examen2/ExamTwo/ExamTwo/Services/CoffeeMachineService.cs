@@ -50,7 +50,7 @@ namespace ExamTwo.Services
             // Check if payment is valid
             if (orderRequest.Payment != null)
             {
-                // Si Payment exists, validate positivo TotalAmount
+                // If Payment exists, validate positive TotalAmount
                 if (orderRequest.Payment.TotalAmount <= 0)
                 {
                     errorMessage = "Monto de pago inválido.";
@@ -84,6 +84,12 @@ namespace ExamTwo.Services
             errorMessage = string.Empty;
             var payment = orderRequest.Payment;
             
+            if (payment == null)
+            {
+                errorMessage = "La información de pago es requerida.";
+                return false;
+            }
+
             // Validate denominations (coins and bills)
             var (isValidDenom, denomError) = payment.ValidateDenominations();
             if (!isValidDenom)
@@ -145,7 +151,13 @@ namespace ExamTwo.Services
         {
             var response = new CoffeeMachineResponse();
             
-            // Validate order
+            if (orderRequest.Payment == null)
+            {
+                response.Success = false;
+                response.Message = "La información de pago es requerida.";
+                return response;
+            }
+
             if (!ValidateOrder(orderRequest, out string errorMessage))
             {
                 response.Success = false;
@@ -161,7 +173,6 @@ namespace ExamTwo.Services
                 totalCost += coffee.Price * orderItem.Value;
             }
             
-            // Validate payment
             if (!ValidatePayment(orderRequest, totalCost, out errorMessage))
             {
                 response.Success = false;
@@ -211,6 +222,27 @@ namespace ExamTwo.Services
             response.ChangeBreakdown = changeBreakdown;
             
             return response;
+        }
+
+        public string FormatPurchaseResponse(CoffeeMachineResponse result)
+        {
+            if (result.ChangeAmount == 0)
+            {
+                return "Compra exitosa. No hay vuelto.";
+            }
+            
+            string responseMessage = $"Su vuelto es de {result.ChangeAmount} colones.\nDesglose:";
+            
+            if (result.ChangeBreakdown != null && result.ChangeBreakdown.Count > 0)
+            {
+                // Sort coins from highest to lowest
+                foreach (var coin in result.ChangeBreakdown.OrderByDescending(c => c.Key))
+                {
+                    responseMessage += $"\n{coin.Value} moneda(s) de {coin.Key}";
+                }
+            }
+            
+            return responseMessage;
         }
         
         // Calculates the optimal coin breakdown for a given change amount
