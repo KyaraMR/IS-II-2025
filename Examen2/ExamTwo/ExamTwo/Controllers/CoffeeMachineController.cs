@@ -48,12 +48,12 @@ namespace ExamTwo.Controllers
         {
             if (request == null)
             {
-                return BadRequest("Solicitud inválida.");
+                return BadRequest("Invalid request.");
             }
             
             if (request.Payment == null)
             {
-                return BadRequest("Se requiere información de pago.");
+                return BadRequest("Payment information required.");
             }
             
             // Optional: Check if at least some payment method is provided
@@ -63,7 +63,7 @@ namespace ExamTwo.Controllers
             
             if (!hasCoins && !hasBills && !hasTotalAmount)
             {
-                return BadRequest("Debe proporcionar monedas, billetes o un monto total.");
+                return BadRequest("You must give, coins, bills or the total amount.");
             }
             
             // Process purchase through service
@@ -86,7 +86,7 @@ namespace ExamTwo.Controllers
         {
             if (order == null || order.Count == 0)
             {
-                return BadRequest("La orden no puede estar vacía.");
+                return BadRequest("The order is empty.");
             }
             
             // Create a temporary request to reuse validation logic
@@ -104,24 +104,24 @@ namespace ExamTwo.Controllers
                 return BadRequest(errorMessage);
             }
             
-            return Ok("Disponibilidad confirmada. Puede proceder con la compra.");
+            return Ok("Confirmed availability. You can continue with the purchase.");
         }
 
         private string FormatPurchaseResponse(CoffeeMachineResponse result)
         {
             if (result.ChangeAmount == 0)
             {
-                return "Compra exitosa. No hay vuelto.";
+                return "Succesful purchase. No change in return.";
             }
             
-            string responseMessage = $"Su vuelto es de {result.ChangeAmount} colones.\nDesglose:";
+            string responseMessage = $"Your change is {result.ChangeAmount} colones.\nBreakdown:";
             
             if (result.ChangeBreakdown != null && result.ChangeBreakdown.Count > 0)
             {
                 // Sort coins from highest to lowest
                 foreach (var coin in result.ChangeBreakdown.OrderByDescending(c => c.Key))
                 {
-                    responseMessage += $"\n{coin.Value} moneda(s) de {coin.Key}";
+                    responseMessage += $"\n{coin.Value} coin(s) of {coin.Key}";
                 }
             }
             

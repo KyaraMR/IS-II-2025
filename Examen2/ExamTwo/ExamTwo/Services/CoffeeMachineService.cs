@@ -43,17 +43,17 @@ namespace ExamTwo.Services
             // Check if order is empty
             if (orderRequest == null || orderRequest.Order == null || orderRequest.Order.Count == 0)
             {
-                errorMessage = "Orden vacía.";
+                errorMessage = "The order is empty.";
                 return false;
             }
             
             // Check if payment is valid
             if (orderRequest.Payment != null)
             {
-                // Si Payment exists, validate positivo TotalAmount
+                // If Payment exists, validate positive TotalAmount
                 if (orderRequest.Payment.TotalAmount <= 0)
                 {
-                    errorMessage = "Monto de pago inválido.";
+                    errorMessage = "Invalid amount.";
                     return false;
                 }
             }
@@ -64,14 +64,14 @@ namespace ExamTwo.Services
                 var coffee = _repository.GetCoffeeByName(orderItem.Key);
                 if (coffee == null)
                 {
-                    errorMessage = $"El café '{orderItem.Key}' no existe.";
+                    errorMessage = $"The coffee '{orderItem.Key}' does not exist.";
                     return false;
                 }
                 
                 // Check if enough quantity is available
                 if (coffee.AvailableQuantity < orderItem.Value)
                 {
-                    errorMessage = $"No hay suficientes unidades de {orderItem.Key}. Disponibles: {coffee.AvailableQuantity}";
+                    errorMessage = $"Not enough {orderItem.Key}. Available: {coffee.AvailableQuantity}";
                     return false;
                 }
             }
@@ -84,6 +84,12 @@ namespace ExamTwo.Services
             errorMessage = string.Empty;
             var payment = orderRequest.Payment;
             
+            if (payment == null)
+            {
+                errorMessage = "Payment information is required.";
+                return false;
+            }
+
             // Validate denominations (coins and bills)
             var (isValidDenom, denomError) = payment.ValidateDenominations();
             if (!isValidDenom)
@@ -103,8 +109,8 @@ namespace ExamTwo.Services
             // Validate that payment covers cost
             if (payment.TotalAmount < totalCost)
             {
-                errorMessage = $"Dinero insuficiente. Total requerido: {totalCost} colones, " +
-                             $"Pagado: {payment.TotalAmount} colones.";
+                errorMessage = $"Unsufficient money. Total required: {totalCost} colones, " +
+                             $"Payed: {payment.TotalAmount} colones.";
                 return false;
             }
             
@@ -176,7 +182,7 @@ namespace ExamTwo.Services
             if (!HasEnoughChange(changeAmount))
             {
                 response.Success = false;
-                response.Message = "No hay suficiente cambio en la máquina. La máquina está fuera de servicio.";
+                response.Message = "Not enough change. The machine is out of service.";
                 return response;
             }
             
@@ -193,7 +199,7 @@ namespace ExamTwo.Services
             if (changeBreakdown == null)
             {
                 response.Success = false;
-                response.Message = "Fallo al realizar la compra - no se puede dar cambio exacto.";
+                response.Message = "Purchase failed, Can not give the exact chance.";
                 return response;
             }
             
@@ -206,7 +212,7 @@ namespace ExamTwo.Services
             }
             
             response.Success = true;
-            response.Message = "Compra realizada exitosamente.";
+            response.Message = "Successful purchase.";
             response.ChangeAmount = changeAmount;
             response.ChangeBreakdown = changeBreakdown;
             

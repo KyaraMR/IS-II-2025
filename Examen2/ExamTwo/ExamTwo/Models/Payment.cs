@@ -25,8 +25,8 @@ namespace ExamTwo.Models
                     if (coin != 500 && coin != 100 && coin != 50 && coin != 25)
                     {
                         return (false, 
-                            $"Moneda no permitida: {coin}. " +
-                            "Solo se aceptan monedas de 500, 100, 50, 25 colones.");
+                            $"Invalid coin: {coin}. " +
+                            "The only coins allowed are 500, 100, 50, 25 colones.");
                     }
                 }
             }
@@ -39,8 +39,8 @@ namespace ExamTwo.Models
                     if (bill != 1000)
                     {
                         return (false, 
-                            $"Billete no permitido: {bill}. " +
-                            "Solo se aceptan billetes de 1000 colones.");
+                            $"Invalid bill: {bill}. " +
+                            "The only bills allowed are 1000 colones.");
                     }
                 }
             }
@@ -65,8 +65,8 @@ namespace ExamTwo.Models
             if (TotalAmount != calculatedTotal)
             {
                 return (false, 
-                    $"El monto total ({TotalAmount}) no coincide con la suma de " +
-                    $"monedas y billetes ({calculatedTotal}).");
+                    $"The total amount ({TotalAmount}) does not match the sum of " +
+                    $"coins and bills ({calculatedTotal}).");
             }
             
             return (true, string.Empty);
