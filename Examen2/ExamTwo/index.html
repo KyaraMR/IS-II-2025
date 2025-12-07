@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Machine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #000000;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #000000;
+        }
+        
+        h2, h3 {
+            color: #000000;
+            margin: 15px 0 10px 0;
+        }
+        
+        h3 {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 5px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .coffee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #dee2e6;
+        }
+        
+        .coffee-item:last-child {
+            border-bottom: none;
+        }
+        
+        .coffee-name {
+            font-weight: 500;
+            color: #000000;
+        }
+        
+        .coffee-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .coffee-price {
+            color: #000000;
+            font-weight: bold;
+        }
+        
+        .coffee-stock {
+            color: #000000;
+            font-size: 0.9em;
+        }
+        
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: center;
+            color: #000000;
+        }
+        
+        input[type="number"]:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+            color: #666666;
+        }
+        
+        .order-summary {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .order-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            color: #000000;
+        }
+        
+        .order-total {
+            text-align: right;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #000000;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #000000;
+        }
+        
+        .money-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .money-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        
+        .money-input label {
+            font-size: 0.9em;
+            color: #000000;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .money-input input {
+            width: 80px;
+            padding: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            color: #000000;
+        }
+        
+        .payment-summary {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #000000;
+        }
+        
+        .payment-info {
+            text-align: center;
+            color: #000000;
+        }
+        
+        .payment-info span {
+            display: block;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #000000;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        #buy-btn {
+            background: #666666;
+        }
+        
+        #buy-btn:hover:not(:disabled) {
+            background: #555555;
+        }
+        
+        #buy-btn:disabled {
+            background: #999999;
+            cursor: not-allowed;
+        }
+        
+        #reset-btn {
+            background: #666666;
+        }
+        
+        #reset-btn:hover {
+            background: #555555;
+        }
+        
+        #message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            min-height: 60px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #000000;
+            background: #f8f9fa;
+            border: 1px solid #000000;
+        }
+        
+        .message-success {
+            background: #f8f9fa;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        .message-error {
+            background: #f8f9fa;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        .change-details {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #000000;
+            display: none;
+            color: #000000;
+        }
+        
+        .change-details div {
+            margin: 5px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            color: #000000;
+        }
+        
+        p, strong, span {
+            color: #000000;
+        }
+        
+        hr {
+            border-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coffee Machine</h1>
+        
+        <!-- Available Coffees -->
+        <div class="section">
+            <h2>Available Coffees</h2>
+            <div id="coffee-list">
+                <p>Loading coffees...</p>
+            </div>
+        </div>
+        
+        <!-- Your Order -->
+        <div class="section">
+            <h2>Your Order</h2>
+            <div id="order-summary" class="order-summary">
+                <div id="order-items">
+                    <p>No coffee selected</p>
+                </div>
+                <div class="order-total">
+                    Total: ₡<span id="total">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment -->
+        <div class="section">
+            <h2>Payment</h2>
+            <p style="margin-bottom: 15px; color: #000000;">Insert your money:</p>
+            
+            <div class="money-inputs">
+                <div class="money-input">
+                    <label>₡1000 Bills</label>
+                    <input type="number" id="bill1000" min="0" value="0">
+                </div>
+                <div class="money-input">
+                    <label>₡500 Coins</label>
+                    <input type="number" id="coin500" min="0" value="0">
+                </div>
+                <div class="money-input">
+                    <label>₡100 Coins</label>
+                    <input type="number" id="coin100" min="0" value="0">
+                </div>
+                <div class="money-input">
+                    <label>₡50 Coins</label>
+                    <input type="number" id="coin50" min="0" value="0">
+                </div>
+                <div class="money-input">
+                    <label>₡25 Coins</label>
+                    <input type="number" id="coin25" min="0" value="0">
+                </div>
+            </div>
+            
+            <div class="payment-summary">
+                <div class="payment-info">
+                    Inserted<br>
+                    <span>₡<span id="inserted">0</span></span>
+                </div>
+                <div class="payment-info">
+                    Change<br>
+                    <span>₡<span id="change">0</span></span>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="buy-btn" onclick="buy()">Buy Coffee</button>
+                <button id="reset-btn" onclick="resetAll()">Reset All</button>
+            </div>
+            
+            <div id="message"></div>
+            <div id="change-details" class="change-details"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const BACKEND_URL = 'http://localhost:5059';
+        
+        // Global variables
+        let coffees = [];
+        let order = {};
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCoffees();
+            
+            // Add event listeners to money inputs
+            ['bill1000', 'coin500', 'coin100', 'coin50', 'coin25'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calculatePayment);
+            });
+        });
+        
+        // Load coffees from backend
+        async function loadCoffees() {
+            try {
+                const quantitiesRes = await fetch(`${BACKEND_URL}/api/CoffeeMachine/coffees`);
+                const pricesRes = await fetch(`${BACKEND_URL}/api/CoffeeMachine/prices`);
+                
+                if (!quantitiesRes.ok || !pricesRes.ok) {
+                    throw new Error('Failed to load coffee data');
+                }
+                
+                const quantities = await quantitiesRes.json();
+                const prices = await pricesRes.json();
+                
+                // Create coffee array
+                coffees = Object.keys(quantities).map(name => ({
+                    name: name,
+                    quantity: quantities[name],
+                    price: prices[name] || 0
+                }));
+                
+                displayCoffees();
+            } catch (error) {
+                showMessage('Unable to load coffees. Please check if the backend is running.', 'error');
+            }
+        }
+        
+        function displayCoffees() {
+            const coffeeList = document.getElementById('coffee-list');
+            coffeeList.innerHTML = '';
+            
+            coffees.forEach(coffee => {
+                const div = document.createElement('div');
+                div.className = 'coffee-item';
+                
+                div.innerHTML = `
+                    <div>
+                        <span class="coffee-name">${coffee.name}</span>
+                        <div class="coffee-stock">${coffee.quantity} available</div>
+                    </div>
+                    <div class="coffee-details">
+                        <span class="coffee-price">₡${coffee.price}</span>
+                        <input type="number" 
+                               id="qty-${coffee.name}"
+                               min="0" 
+                               max="${coffee.quantity}"
+                               value="${order[coffee.name] || 0}"
+                               onchange="updateOrder('${coffee.name}', this.value)"
+                               ${coffee.quantity === 0 ? 'disabled' : ''}>
+                    </div>
+                `;
+                coffeeList.appendChild(div);
+            });
+            
+            updateOrderDisplay();
+        }
+        
+        function updateOrder(coffeeName, quantity) {
+            const qty = parseInt(quantity) || 0;
+            const coffee = coffees.find(c => c.name === coffeeName);
+            
+            if (coffee && qty > coffee.quantity) {
+                showMessage(`Only ${coffee.quantity} ${coffee.name} available`, 'error');
+                document.getElementById(`qty-${coffeeName}`).value = order[coffeeName] || 0;
+                return;
+            }
+            
+            if (qty > 0) {
+                order[coffeeName] = qty;
+            } else {
+                delete order[coffeeName];
+            }
+            
+            updateOrderDisplay();
+        }
+        
+        function updateOrderDisplay() {
+            const orderItems = document.getElementById('order-items');
+            let total = 0;
+            let html = '';
+            
+            Object.keys(order).forEach(coffeeName => {
+                const coffee = coffees.find(c => c.name === coffeeName);
+                if (coffee && order[coffeeName] > 0) {
+                    const subtotal = coffee.price * order[coffeeName];
+                    total += subtotal;
+                    html += `
+                        <div class="order-line">
+                            <span>${coffeeName} x${order[coffeeName]}</span>
+                            <span>₡${subtotal}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (html === '') {
+                html = '<p>No coffee selected</p>';
+            }
+            
+            orderItems.innerHTML = html;
+            document.getElementById('total').textContent = total;
+            
+            calculatePayment();
+        }
+        
+        function calculatePayment() {
+            const total = parseInt(document.getElementById('total').textContent) || 0;
+            
+            const bill1000 = parseInt(document.getElementById('bill1000').value) || 0;
+            const coin500 = parseInt(document.getElementById('coin500').value) || 0;
+            const coin100 = parseInt(document.getElementById('coin100').value) || 0;
+            const coin50 = parseInt(document.getElementById('coin50').value) || 0;
+            const coin25 = parseInt(document.getElementById('coin25').value) || 0;
+            
+            const inserted = (bill1000 * 1000) + (coin500 * 500) + 
+                           (coin100 * 100) + (coin50 * 50) + (coin25 * 25);
+            
+            const change = Math.max(inserted - total, 0);
+            
+            document.getElementById('inserted').textContent = inserted;
+            document.getElementById('change').textContent = change;
+            
+            // Enable/disable buy button
+            document.getElementById('buy-btn').disabled = 
+                total === 0 || inserted < total || Object.keys(order).length === 0;
+        }
+        
+        // Buy coffee
+        async function buy() {
+            const total = parseInt(document.getElementById('total').textContent);
+            const inserted = parseInt(document.getElementById('inserted').textContent);
+            
+            // Build payment object
+            const bill1000 = parseInt(document.getElementById('bill1000').value) || 0;
+            const coin500 = parseInt(document.getElementById('coin500').value) || 0;
+            const coin100 = parseInt(document.getElementById('coin100').value) || 0;
+            const coin50 = parseInt(document.getElementById('coin50').value) || 0;
+            const coin25 = parseInt(document.getElementById('coin25').value) || 0;
+            
+            const coins = [];
+            for (let i = 0; i < coin500; i++) coins.push(500);
+            for (let i = 0; i < coin100; i++) coins.push(100);
+            for (let i = 0; i < coin50; i++) coins.push(50);
+            for (let i = 0; i < coin25; i++) coins.push(25);
+            
+            const bills = [];
+            for (let i = 0; i < bill1000; i++) bills.push(1000);
+            
+            const totalAmount = inserted;
+            
+            const requestData = {
+                Order: order,
+                Payment: {
+                    TotalAmount: totalAmount,
+                    Coins: coins,
+                    Bills: bills
+                }
+            };
+            
+            showMessage('Processing purchase...', '');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/CoffeeMachine/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.text();
+                
+                if (response.ok) {
+                    showMessage(result, 'success');
+                    displayChangeBreakdown(result);
+                    
+                    // Refresh coffee list
+                    await loadCoffees();
+                    
+                    // Reset payment inputs
+                    document.getElementById('bill1000').value = 0;
+                    document.getElementById('coin500').value = 0;
+                    document.getElementById('coin100').value = 0;
+                    document.getElementById('coin50').value = 0;
+                    document.getElementById('coin25').value = 0;
+                    
+                } else {
+                    showMessage(result, 'error');
+                }
+            } catch (error) {
+                showMessage('Connection error. Please check if the backend is running.', 'error');
+            }
+        }
+        
+        function displayChangeBreakdown(resultText) {
+            const changeDetails = document.getElementById('change-details');
+            const lines = resultText.split('\n');
+            let breakdownHtml = '';
+            
+            // Look for change information
+            for (const line of lines) {
+                if (line.includes('coin(s) of')) {
+                    const match = line.match(/(\d+) coin\(s\) of (\d+)/);
+                    if (match) {
+                        const quantity = match[1];
+                        const denomination = match[2];
+                        breakdownHtml += `
+                            <div>
+                                ${quantity} coin(s) of ₡${denomination} = ₡${quantity * denomination}
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            if (breakdownHtml) {
+                changeDetails.innerHTML = '<strong>Change Breakdown:</strong>' + breakdownHtml;
+                changeDetails.style.display = 'block';
+            } else if (resultText.includes('No change in return')) {
+                changeDetails.innerHTML = '<strong>No change to return</strong>';
+                changeDetails.style.display = 'block';
+            } else {
+                changeDetails.style.display = 'none';
+            }
+        }
+        
+        function resetAll() {
+            order = {};
+            
+            // Reset coffee quantities
+            coffees.forEach(coffee => {
+                const input = document.getElementById(`qty-${coffee.name}`);
+                if (input) input.value = 0;
+            });
+            
+            // Reset payment inputs
+            document.getElementById('bill1000').value = 0;
+            document.getElementById('coin500').value = 0;
+            document.getElementById('coin100').value = 0;
+            document.getElementById('coin50').value = 0;
+            document.getElementById('coin25').value = 0;
+            
+            updateOrderDisplay();
+            document.getElementById('message').innerHTML = '';
+            document.getElementById('change-details').style.display = 'none';
+            document.getElementById('change-details').innerHTML = '';
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = message.replace(/\n/g, '<br>');
+            messageDiv.className = type ? `message-${type}` : '';
+            
+            // Auto-clear after 5 seconds for errors
+            if (type === 'error') {
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    messageDiv.className = '';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -20,7 +20,7 @@ II Semestre, 2025
     dotnet restore
     ```
 
-3. **Ejecutar la aplicación**
+3. **Ejecutar el backend de la aplicación**
 
     ```bash
     dotnet run
@@ -28,9 +28,13 @@ II Semestre, 2025
 
 4. **Acceder a Swagger UI**
 
-https://localhost:7183/swagger
+    https://localhost:7183/swagger
 
-http://localhost:5059/swagger
+    http://localhost:5059/swagger
+
+5. **Ejecutar el frontend de la aplicación**
+
+    El frontend se ejecuta abriendo directamente el archivo index.html después de poner a correr el backend.
 
 ## Endpoints de la API
 
@@ -75,4 +79,4 @@ dotnet test
 
 ## Mockup del Frontend
 
-![Mockup](Mockup.jpg)
+![Mockup](Mockup.png)
